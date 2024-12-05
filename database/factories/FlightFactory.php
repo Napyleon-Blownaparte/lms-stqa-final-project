@@ -17,11 +17,11 @@ class FlightFactory extends Factory
     public function definition(): array
     {
         return [
-            'flight_code' => strtoupper($this->faker->lexify('?????')),
-            'origin' => $this->faker->regexify('[A-Z]{3}'),
-            'destination' => $this->faker->regexify('[A-Z]{3}'),
-            'departure_time' => $this->faker->dateTime(),
-            'arrival_time' => $this->faker->dateTime(),
+            'flight_code' => $this->faker->unique()->bothify('?##'), // Contoh flight code seperti ABC12
+            'origin' => $this->faker->countryCode, // Asal, seperti "ID" atau "US"
+            'destination' => $this->faker->countryCode, // Tujuan, seperti "ID" atau "US"
+            'departure_time' => $this->faker->dateTimeThisMonth(),
+            'arrival_time' => $this->faker->dateTimeThisMonth(),
         ];
     }
 }

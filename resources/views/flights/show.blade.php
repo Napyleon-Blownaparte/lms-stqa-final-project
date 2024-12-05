@@ -14,7 +14,9 @@
                 <th>Passenger Phone</th>
                 <th>Seat Number</th>
                 <th>Boarding</th>
-                <th>Delete</th>
+                @if (Auth::check() && Auth::user()->is_admin) <!-- Kolom action hanya untuk admin -->
+                    <th>Action</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -28,25 +30,32 @@
                         @if ($ticket->is_boarding)
                             Confirmed at {{ $ticket->boarding_time }}
                         @else
-                            <form method="POST" action="{{ route('tickets.update', $ticket) }}">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="is_boarding" value="1">
-                                <button type="submit" class="px-2 py-1 bg-blue-500 text-white rounded">Confirm</button>
-                            </form>
+                            @if (Auth::check() && Auth::user()->is_admin) <!-- Hanya admin yang bisa konfirmasi boarding -->
+                                <form method="POST" action="{{ route('tickets.update', $ticket) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="is_boarding" value="1">
+                                    <button type="submit" class="px-2 py-1 bg-blue-500 text-white rounded">Confirm</button>
+                                </form>
+                            @else
+                                Not Confirmed
+                            @endif
                         @endif
                     </td>
-                    <td>
-                        <form method="POST" action="{{ route('tickets.delete', $ticket) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
-                        </form>
-                    </td>
+                    @if (Auth::check() && Auth::user()->is_admin) <!-- Hanya admin yang bisa melihat kolom Action dan delete -->
+                        <td>
+                            <form method="POST" action="{{ route('tickets.delete', $ticket) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
+                            </form>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>
     </table>
+
     <script>
         $(document).ready(function() {
             $('#ticketsTable').DataTable({
@@ -64,6 +73,4 @@
             });
         });
     </script>
-
 @endsection
-
