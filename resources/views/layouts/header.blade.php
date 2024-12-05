@@ -15,13 +15,31 @@
             </button>
         </div>
         <div class="hidden lg:flex lg:gap-x-12 lg:justify-center w-full max-w-screen-lg mx-auto translate-x-[-2em]">
-            <a href="{{ route('flights.index') }}" class="text-sm font-bold text-gray-900 hover:text-indigo-600 transform hover:scale-105 transition duration-300 ease-in-out">
-                Show All Flights
-            </a>
-        </div>
+            <div class="flex items-center gap-x-12">
+                <a href="{{ route('flights.index') }}" class="text-sm font-bold text-gray-900 hover:text-indigo-600 transform hover:scale-105 transition duration-300 ease-in-out">
+                    Show All Flights
+                </a>
+                @auth
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-sm font-bold text-gray-900 hover:text-indigo-600 transform hover:scale-105 transition duration-300 ease-in-out">
+                            Logout
+                        </button>
+                    </form>
+                @endauth
+            </div>
 
+
+            <!-- Button for guests (Login) -->
+            @guest
+                <a href="{{ route('login') }}" class="text-sm font-bold text-gray-900 hover:text-indigo-600 transform hover:scale-105 transition duration-300 ease-in-out">
+                    Login
+                </a>
+            @endguest
+        </div>
     </nav>
 
+    <!-- Mobile menu for small screens -->
     <div class="lg:hidden" id="mobile-menu" role="dialog" aria-modal="true">
         <div class="fixed inset-0 z-50 bg-gray-500 opacity-50" id="backdrop"></div>
         <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
@@ -40,12 +58,25 @@
             <div class="mt-6 flow-root">
                 <div class="-my-6 divide-y divide-gray-500/10">
                     <div class="space-y-2 py-6">
-                        <a href="{{ route('flights.index')  }}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50">Add Purchase</a>                    </div>
+                        <a href="{{ route('flights.index')  }}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50">Add Purchase</a>
+
+                        <!-- Mobile Login and Logout buttons -->
+                        @auth
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50">
+                                    Logout
+                                </button>
+                            </form>
+                        @endauth
+
+                        @guest
+                            <a href="{{ route('login') }}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50">Login</a>
+                        @endguest
+                    </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </header>
 
