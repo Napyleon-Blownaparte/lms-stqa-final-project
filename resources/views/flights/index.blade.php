@@ -19,13 +19,14 @@
                     <p>{{ $flight->arrival_time  }}</p>
                 </div>
                 <div class="flex justify-between gap-7 mt-5">
-                    <a href="{{ url('flights/book/' . $flight->id)  }}" class="pt-2 block text-center no-underline rounded h-10 w-32 self-end text-white bg-gradient-to-r from-cyan-600 to-blue-500 font-bold transition duration-100 hover:scale-105 hover:shadow-2xl">Book Ticket</a>
+                    @if (Auth::check() && !Auth::user()->is_admin) <!-- Kondisi hanya untuk user yang bukan admin -->
+                        <a href="{{ url('flights/book/' . $flight->id)  }}" class="pt-2 block text-center no-underline rounded h-10 w-32 self-end text-white bg-gradient-to-r from-cyan-600 to-blue-500 font-bold transition duration-100 hover:scale-105 hover:shadow-2xl">Book Ticket</a>
+                    @endif
                     <a href="{{ url('flights/ticket/' . $flight->id)  }}" class="pt-2 block text-center no-underline rounded h-10 w-32 self-end text-white bg-gradient-to-r from-pink-600 to-purple-500 font-bold transition duration-100 hover:scale-105 hover:shadow-2xl">View Details</a>
                 </div>
 
             </div>
             @endforeach
         </div>
-
-
+    </div>
 @endsection
