@@ -63,8 +63,10 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="block text-center no-underline rounded h-10 w-32 self-end text-white bg-gradient-to-r from-cyan-600 to-blue-500 font-bold transition duration-100 hover:scale-105 hover:shadow-2xl">Book Ticket</button>
-            <a href="{{ route('flights.index') }}" class="block text-center no-underline rounded h-10 w-32 self-end text-gray-500 mt-4">Cancel</a>
+            <div class="flex gap-4 mt-6">
+                <button type="submit" class="block text-center no-underline rounded h-10 w-32 text-white bg-gradient-to-r from-cyan-600 to-blue-500 font-bold transition duration-100 hover:scale-105 hover:shadow-2xl">Book Ticket</button>
+                <a href="{{ route('flights.index') }}" class="text-center no-underline rounded h-10 w-32 text-white bg-gradient-to-r from-red-600 to-red-800 font-bold transition duration-100 hover:scale-105 hover:shadow-2xl flex items-center justify-center">Cancel</a>
+            </div>
         </form>
     </div>
 @endsection

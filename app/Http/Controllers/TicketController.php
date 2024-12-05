@@ -29,15 +29,22 @@ class TicketController extends Controller
 
         Flight::find($flight_id)->tickets()->create(array_merge($validated, ['boarding_time' => now()]));
 
-        return redirect(route('flights.index'))->with(['success' => 'Tambah tiket berhasil']);
+        return redirect(route('flights.show', $flight_id))->with(['success' => 'Tambah tiket berhasil']);
     }
 
 
 
-    public function edit(Ticket $ticket)
+    public function update(Request $request, Ticket $ticket)
     {
+        // Pastikan hanya boarding yang diperbarui
+        $ticket->update([
+            'is_boarding' => 1, // Set status boarding
+            'boarding_time' => now(), // Update boarding time ke waktu saat ini
+        ]);
 
+        return redirect()->back()->with('success', 'Boarding berhasil dikonfirmasi!');
     }
+
 
     public function delete(Ticket $ticket)
     {
