@@ -3,7 +3,7 @@
         <div class="flex">
             <a href="#" class="">
                 <span class="sr-only">Your Company</span>
-                <img class="h-16 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHDVJMnKpUF3NwTgo7KYy7GB1EbdfbA0jMnw&s" alt="">
+                <img class="h-16 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV_AmbN0Xg1Nf8m6vhjNWoDJgCmJCO7E-UAA&s" alt="">
             </a>
         </div>
         <div class="flex lg:hidden">
@@ -28,7 +28,7 @@
             <div class="flex items-center justify-between">
                 <a href="#" class="-m-1.5 p-1.5">
                     <span class="sr-only">Your Company</span>
-                    <img class="h-8 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHDVJMnKpUF3NwTgo7KYy7GB1EbdfbA0jMnw&s" alt="">
+                    <img class="h-8 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV_AmbN0Xg1Nf8m6vhjNWoDJgCmJCO7E-UAA&s" alt="">
                 </a>
                 <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700" id="close-button">
                     <span class="sr-only">Close menu</span>
@@ -43,7 +43,9 @@
                         <a href="{{ route('flights.index')  }}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50">Add Purchase</a>                    </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 </header>
 
