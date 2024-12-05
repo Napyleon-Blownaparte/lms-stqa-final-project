@@ -17,7 +17,12 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-
+            'flight_id' => \App\Models\Flight::factory(),
+            'passenger_name' => $this->faker->name(),
+            'passenger_phone' => $this->faker->phoneNumber(),
+            'seat_number' => $this->faker->regexify('[A-Z][0-9]{2}'),
+            'is_boarding' => false,
+            'boarding_time' => null,
         ];
     }
 }

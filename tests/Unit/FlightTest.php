@@ -3,41 +3,36 @@
 namespace Tests\Unit;
 
 use App\Models\Flight;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class FlightTest extends TestCase
 {
     /**
      * A basic unit test example.
      */
+
+    use RefreshDatabase;
+
     public function testFlightConstructor()
     {
         $currentDate = now();
 
-        // $flight = Flight::factory()->create([
-        //     'flight_code' => 'JT610',
-        //     'origin' => 'SUB',
-        //     'destination' => 'CGK',
-        //     'departure_time' => $currentDate,
-        //     'arrival_time' => $currentDate->addHour(2),
-        // ]);
-
-        $flight = [
+        $flight = Flight::factory()->create([
             'flight_code' => 'JT610',
             'origin' => 'SUB',
             'destination' => 'CGK',
             'departure_time' => $currentDate,
-            'arrival_time' => $currentDate->addHour(2),
-        ];
+            'arrival_time' => $currentDate->copy()->addDay(2),
+        ]);
 
-        // Flight::insert($flight);
 
-        $this->assertEquals('flights',[
+        $this->assertDatabaseHas('flights',[
             'flight_code' => 'JT610',
             'origin' => 'SUB',
             'destination' => 'CGK',
-            'departure_time' => $currentDate,
-            'arrival_time' => $currentDate->addHour(2),
+            'departure_time' => $currentDate->toDateTimeString(),
+            'arrival_time' => $currentDate->addDay(2)->toDateTimeString(),
         ]);
     }
 }
