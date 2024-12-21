@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Flight;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -20,7 +21,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'passenger_name' => 'required|string|max:255',
             'passenger_phone' => 'required|digits_between:10,14',
-            'seat_number' => 'required|string|max:3',
+            'seat_number' => 'required|string|regex:/^[a-zA-Z]{1}[0-9]{1,2}$/',
         ]);
 
 
@@ -36,12 +37,15 @@ class TicketController extends Controller
 
     public function update(Request $request, Ticket $ticket)
     {
-        // Pastikan hanya boarding yang diperbarui
-        $ticket->update([
-            'is_boarding' => 1, // Set status boarding
-            'boarding_time' => now(), // Update boarding time ke waktu saat ini
+        $validated = $request->validate([
+            'is_boarding' => 'required|boolean',
         ]);
-
+    
+        $ticket->update([
+            'is_boarding' => $validated['is_boarding'], // Set status boarding
+            'boarding_time' => $validated['is_boarding'] ? now() : null, // Update boarding time jika boarding
+        ]);
+    
         return redirect()->back()->with('success', 'Boarding berhasil dikonfirmasi!');
     }
 

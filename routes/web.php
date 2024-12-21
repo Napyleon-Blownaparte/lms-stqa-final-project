@@ -22,19 +22,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::middleware(UserMiddleware::class)->group(function () {
         Route::get('/flights', [FlightController::class, 'index'])->name('flights.index');
         Route::get('/flights/ticket/{flight:id}', [FlightController::class, 'show'])->name('flights.show');
         Route::get('/flights/book/{flight:id}', [TicketController::class, 'create'])->name('tickets.create');
         Route::post('/ticket/submit/', [TicketController::class, 'store'])->name('tickets.store');
-    });
 
-    Route::middleware(AdminMiddleware::class)->group(function () {
         Route::get('/flights', [FlightController::class, 'index'])->name('flights.index');
         Route::get('/flights/ticket/{flight:id}', [FlightController::class, 'show'])->name('flights.show');
-        Route::put('/ticket/board/{ticket:id}', [TicketController::class, 'update'])->name('tickets.update');
+        Route::match(['patch','put'],'/ticket/board/{ticket:id}', [TicketController::class, 'update'])->name('tickets.update');
         Route::delete('/ticket/delete/{ticket:id}', [TicketController::class, 'delete'])->name('tickets.delete');
-    });
 
 });
 
