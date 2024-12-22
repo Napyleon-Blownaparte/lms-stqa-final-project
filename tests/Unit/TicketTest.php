@@ -329,4 +329,25 @@ class TicketTest extends TestCase
 
         $response->assertStatus(302);
     }
+
+    public function test_update_ticket_with_valid_is_boarding()
+    {
+        $ticket = Ticket::factory()->create([
+            'is_boarding' => 0,
+            'boarding_time' => null,
+        ]);
+
+        $response = $this->patch(route('tickets.update', $ticket), [
+            'is_boarding' => 1, //valid boarding
+        ]);
+
+        $ticket->refresh();
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success', 'Boarding berhasil dikonfirmasi!');
+
+        $this->assertEquals(1, $ticket->is_boarding);
+        $this->assertNotNull($ticket->boarding_time);
+    }    
+    
 }
