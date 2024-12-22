@@ -3,15 +3,20 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\TicketController;
+use App\Models\Flight;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Tests\TestCase;
 use Illuminate\Support\Facades\URL;
 use Mockery;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\WithoutMiddleware;
 
 class TicketTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_store_ticket_with_null_passenger_name()
     {
         $user = User::factory()->create();
@@ -123,34 +128,205 @@ class TicketTest extends TestCase
         $response->assertJsonValidationErrors(['is_boarding']);
     }
 
-    //Masih error
-    public function test_it_accepts_valid_request_data()
-    {
-        // Arrange: Menyiapkan data yang valid
-        $validData = [
-            'passenger_name' => 'John Doe',
-            'passenger_phone' => '081234567890',
-            'seat_number' => 'A12',
-        ];
+    // public function test_store_valid_data()
+    // {
+    //     // Create a user and log in
+    //     $user = User::factory()->create();
+    //     $this->actingAs($user);
 
-        // Simulasi login pengguna
-        $user = User::factory()->create(); // Buat pengguna untuk autentikasi
+    //     // Create a flight for the ticket to be associated with
+    //     $flight = Flight::create([
+    //         'flight_code' => 'FL123',
+    //         'origin' => 'SUB',
+    //         'destination' => 'CGK',
+    //         'departure_time' => now(),
+    //         'arrival_time' => now()->addHours(2),
+    //     ]);
+
+    //     // Simulate a valid request
+    //     $response = $this->post(route('tickets.store'), [
+    //         'passenger_name' => 'John Doe',
+    //         'passenger_phone' => '081234567890',
+    //         'seat_number' => 'A1',
+    //     ], [
+    //         'Referer' => route('flights.show', $flight->id), // Set the previous URL
+    //     ]);
+
+    //     // Assertions
+    //     $response->assertRedirect(route('flights.show', $flight->id));
+    //     $response->assertSessionHas('success', 'Tambah tiket berhasil');
+
+    //     $this->assertDatabaseHas('tickets', [
+    //         'passenger_name' => 'John Doe',
+    //         'passenger_phone' => '081234567890',
+    //         'seat_number' => 'A1',
+    //         'flight_id' => $flight->id,
+    //     ]);
+    // }
+
+    public function test_store_ticket_with_1_letter_passenger_name()
+    {
+        $user = User::factory()->create();
+
         $this->actingAs($user);
 
-        // Act: Kirim data valid
-        $response = $this->postJson('/ticket/submit/', $validData);
-
-        // Assert: Periksa apakah status berhasil dan tiket berhasil ditambahkan
-        $response->assertStatus(201); // Mengharapkan status 201 untuk berhasil membuat
-        $response->assertJson([
-            'success' => 'Tambah tiket berhasil', // Pesan sukses
+        $flight = Flight::create([
+            'flight_code' => 'FL123',
+            'origin' => 'SUB',
+            'destination' => 'CGK',
+            'departure_time' => now(),
+            'arrival_time' => now()->addHours(2),
         ]);
 
-        // Verifikasi apakah data benar-benar disimpan
-        $this->assertDatabaseHas('tickets', [
-            'passenger_name' => 'John Doe',
-            'passenger_phone' => '081234567890',
-            'seat_number' => 'A12',
+        $response = $this->post(
+            route('tickets.store'),
+            [
+                'passenger_name' => 'A', //1 letter
+                'passenger_phone' => '081234567890',
+                'seat_number' => 'A1',
+            ],
+            [
+                'Referer' => route('flights.show', $flight->id),
+            ],
+        );
+
+        $response->assertRedirect(route('flights.show', $flight->id));
+
+        $response->assertSessionHas('success', 'Tambah tiket berhasil');
+
+        $response->assertStatus(302);
+    }
+
+    public function test_store_ticket_with_255_letter_passenger_name()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $flight = Flight::create([
+            'flight_code' => 'FL123',
+            'origin' => 'SUB',
+            'destination' => 'CGK',
+            'departure_time' => now(),
+            'arrival_time' => now()->addHours(2),
         ]);
+
+        $response = $this->post(
+            route('tickets.store'),
+            [
+                //255 letter
+                'passenger_name' => 'elionthropix QuintessoraZephyronixMandrigalSpectramorphiaZenithalCordithyneLuminarqueSolastrelliumVeridithorusAstrovalkinarHelioscendralChronovatrixVelorithyraStellaphyricIgnisomnisEquilibrosyneNyxaltherionOmnivorathisEcliptorathulChrononixorionBriternatu',
+                'passenger_phone' => '081234567890',
+                'seat_number' => 'A1',
+            ],
+            [
+                'Referer' => route('flights.show', $flight->id),
+            ],
+        );
+
+        $response->assertRedirect(route('flights.show', $flight->id));
+
+        $response->assertSessionHas('success', 'Tambah tiket berhasil');
+
+        $response->assertStatus(302);
+    }
+
+    public function test_store_ticket_with_13_characters_passenger_phone()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $flight = Flight::create([
+            'flight_code' => 'FL123',
+            'origin' => 'SUB',
+            'destination' => 'CGK',
+            'departure_time' => now(),
+            'arrival_time' => now()->addHours(2),
+        ]);
+
+        $response = $this->post(
+            route('tickets.store'),
+            [
+                'passenger_name' => 'John',
+                'passenger_phone' => '0812345678901', //13 char phone
+                'seat_number' => 'A1',
+            ],
+            [
+                'Referer' => route('flights.show', $flight->id),
+            ],
+        );
+
+        $response->assertRedirect(route('flights.show', $flight->id));
+
+        $response->assertSessionHas('success', 'Tambah tiket berhasil');
+
+        $response->assertStatus(302);
+    }
+
+    public function test_store_ticket_with_14_characters_passenger_phone()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $flight = Flight::create([
+            'flight_code' => 'FL123',
+            'origin' => 'SUB',
+            'destination' => 'CGK',
+            'departure_time' => now(),
+            'arrival_time' => now()->addHours(2),
+        ]);
+
+        $response = $this->post(
+            route('tickets.store'),
+            [
+                'passenger_name' => 'John',
+                'passenger_phone' => '08123456789012', //14 char phone
+                'seat_number' => 'A1',
+            ],
+            [
+                'Referer' => route('flights.show', $flight->id),
+            ],
+        );
+
+        $response->assertRedirect(route('flights.show', $flight->id));
+
+        $response->assertSessionHas('success', 'Tambah tiket berhasil');
+
+        $response->assertStatus(302);
+    }
+
+    public function test_store_ticket_with_1_letter_and_2_digits_of_seat_number()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $flight = Flight::create([
+            'flight_code' => 'FL123',
+            'origin' => 'SUB',
+            'destination' => 'CGK',
+            'departure_time' => now(),
+            'arrival_time' => now()->addHours(2),
+        ]);
+
+        $response = $this->post(
+            route('tickets.store'),
+            [
+                'passenger_name' => 'John',
+                'passenger_phone' => '081234567890',
+                'seat_number' => 'B12', //1 letter 2 digit
+            ],
+            [
+                'Referer' => route('flights.show', $flight->id),
+            ],
+        );
+
+        $response->assertRedirect(route('flights.show', $flight->id));
+
+        $response->assertSessionHas('success', 'Tambah tiket berhasil');
+
+        $response->assertStatus(302);
     }
 }
